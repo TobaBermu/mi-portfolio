@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tobías Bermúdez — Marketing Digital & E-commerce</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:         #0A192F;
+      --royal:        #112240;
+      --card:         #0d1f35;
+      --border:       #1d3557;
+      --mid:          #1a2f4a;
+      --electric:     #64FFDA;
+      --electric-dim: rgba(100,255,218,.1);
+      --electric-glow:rgba(100,255,218,.35);
+      --text:         #CCD6F6;
+      --muted:        #4a6580;
+      --deep:         #020617;
+      --white:        #e8f0fe;
+      --font:         'Montserrat', sans-serif;
+      --ease:         cubic-bezier(.5,0,0,1);
+      --ease-bounce:  cubic-bezier(.17,.67,.3,1.33);
+      --ease-smooth:  cubic-bezier(.38,.005,.215,1);
+      --dur:          .7s;
+      --dur-fast:     .35s;
+      --dur-slow:     1s;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--deep);
+      color: var(--text);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ─── Cursor ─── */
+    #cursor {
+      position:fixed; width:8px; height:8px;
+      background:var(--electric); border-radius:50%;
+      pointer-events:none; z-index:9999;
+      transform:translate(-50%,-50%);
+      box-shadow:0 0 10px var(--electric),0 0 20px var(--electric-glow);
+      transition:width .2s var(--ease),height .2s var(--ease);
+    }
+    #cursor-ring {
+      position:fixed; width:34px; height:34px;
+      border:1px solid rgba(100,255,218,.3); border-radius:50%;
+      pointer-events:none; z-index:9998;
+      transform:translate(-50%,-50%);
+    }
+    body:has(a:hover) #cursor,
+    body:has(button:hover) #cursor { width:14px; height:14px; }
+
+    /* ─── Preloader ─── */
+    #preloader {
+      position:fixed; inset:0; z-index:1000;
+      background:var(--navy);
+      display:flex; align-items:center; justify-content:center;
+      clip-path:inset(0 0 0 0);
+      transition:clip-path var(--dur-slow) var(--ease);
+    }
+    #preloader.hidden { clip-path:inset(0 0 100% 0); }
+    .pre-dot { width:10px; height:10px; border-radius:50%; background:var(--electric); box-shadow:0 0 10px var(--electric); animation:pre-bounce .8s ease-in-out infinite; }
+    .pre-dot:nth-child(2){ animation-delay:.15s; }
+    .pre-dot:nth-child(3){ animation-delay:.3s; }
+    .pre-wrap { display:flex; gap:10px; }
+    @keyframes pre-bounce { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(1.8)} }
+
+    /* ─── Nav ─── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1.4rem 4rem; transform:translateY(-100%); opacity:0;
+      transition:all var(--dur-fast) var(--ease);
+    }
+    nav.ready { transform:translateY(0); opacity:1; }
+    nav.scrolled { background:rgba(2,6,23,.95); border-bottom:1px solid var(--border); padding:1rem 4rem; backdrop-filter:blur(16px); }
+    .nav-logo { font-size:.78rem; font-weight:800; letter-spacing:.3em; text-transform:uppercase; color:var(--electric); text-decoration:none; }
+    .nav-links { display:flex; gap:2.5rem; list-style:none; }
+    .nav-links a { font-size:.68rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); text-decoration:none; position:relative; transition:color .3s; }
+    .nav-links a:hover { color:var(--electric); }
+
+    /* ─── Hero ─── */
+    #hero {
+      min-height:100vh;
+      display:grid; grid-template-columns:1fr 1fr;
+      align-items:center;
+      padding:8rem 4rem 4rem;
+      position:relative; overflow:hidden;
+      gap:4rem;
+    }
+    #hero::before {
+      content:''; position:absolute; inset:0;
+      background-image: linear-gradient(rgba(100,255,218,.04) 1px,transparent 1px), linear-gradient(90deg,rgba(100,255,218,.04) 1px,transparent 1px);
+      background-size:55px 55px; animation:grid-drift 20s linear infinite;
+    }
+    @keyframes grid-drift { 0%{background-position:0 0} 100%{background-position:55px 55px} }
+
+    .hero-left { position:relative; z-index:1; }
+    .hero-tag {
+      display:inline-flex; align-items:center; gap:.6rem;
+      font-size:.62rem; font-weight:700; letter-spacing:.3em; text-transform:uppercase;
+      color:var(--electric); border:1px solid rgba(100,255,218,.25);
+      padding:.4rem .9rem; margin-bottom:2rem; opacity:0; transform:translateY(40px);
+    }
+    .hero-name { font-size:clamp(3.5rem,7vw,6.5rem); font-weight:900; line-height:.9; letter-spacing:-.04em; color:var(--white); opacity:0; transform:translateY(60px); }
+    .hero-role { margin-top:1.4rem; font-size:clamp(.95rem,1.6vw,1.15rem); color:var(--text); opacity:0; transform:translateY(30px); }
+    .hero-desc { margin-top:1.6rem; font-size:.88rem; line-height:1.85; color:var(--muted); max-width:440px; opacity:0; transform:translateY(30px); }
+    .hero-ctas { margin-top:2.8rem; display:flex; gap:1rem; opacity:0; transform:translateY(30px); }
+
+    .btn { font-size:.68rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; padding:.9rem 2rem; text-decoration:none; display:inline-flex; align-items:center; gap:.6rem; border:1px solid var(--electric); color:var(--electric); transition: .3s var(--ease); }
+    .btn:hover { background:var(--electric-dim); transform:translateY(-2px); box-shadow:0 0 20px var(--electric-glow); }
+
+    .hero-photo-col { position:relative; z-index:1; display:flex; align-items:center; justify-content:center; opacity:0; transform:translateX(60px); }
+    .hero-img-wrap { width:100%; max-width:420px; aspect-ratio: 4/5; position:relative; }
+    .photo-frame { position:relative; width:100%; height:100%; background:var(--royal); }
+    .photo-frame img { width:100%; height:100%; object-fit:cover; object-position: center top; position:relative; z-index:1; display:block; filter: contrast(1.05) saturate(.9); }
+    
+    .photo-badge { position:absolute; bottom:-20px; left:-20px; background:var(--royal); border:1px solid rgba(100,255,218,.3); padding:.8rem 1.2rem; z-index:2; box-shadow:0 0 18px rgba(100,255,218,.12); }
+    .badge-num { font-size:1.8rem; font-weight:900; color:var(--electric); line-height:1; }
+    .badge-label { font-size:.58rem; font-weight:600; color:var(--muted); text-transform:uppercase; }
+
+    .corner { position:absolute; width:22px; height:22px; z-index:2; }
+    .corner-tl { top:-14px; left:-14px; border-top:2px solid var(--electric); border-left:2px solid var(--electric); }
+    .corner-tr { top:-14px; right:-14px; border-top:2px solid var(--electric); border-right:2px solid var(--electric); }
+    .corner-bl { bottom:-14px; left:-14px; border-bottom:2px solid var(--electric); border-left:2px solid var(--electric); }
+    .corner-br { bottom:-14px; right:-14px; border-bottom:2px solid var(--electric); border-right:2px solid var(--electric); }
+
+    .scroll-cue { position:absolute; bottom:2.5rem; left:4rem; display:flex; align-items:center; gap:.8rem; opacity:0; }
+    .scroll-bar { width:48px; height:1px; background:var(--border); position:relative; overflow:hidden; }
+    .scroll-bar::after { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:var(--electric); animation:scroll-slide 2.2s ease-in-out infinite; }
+    @keyframes scroll-slide { 0%{left:-100%} 100%{left:100%} }
+
+    /* ─── Secciones Comunes ─── */
+    section { padding:8rem 4rem; }
+    .section-inner { max-width:1200px; margin:0 auto; }
+    .section-label { font-size:.6rem; font-weight:700; letter-spacing:.35em; text-transform:uppercase; color:var(--electric); margin-bottom:.7rem; }
+    .section-title { font-size:clamp(2rem,4vw,3.2rem); font-weight:800; color:var(--white); margin-bottom:3.5rem; line-height:.95; }
+    .kw { color:var(--electric); font-weight:700; }
+    .divider { border:none; border-top:1px solid var(--border); margin:0 4rem; }
+
+    /* Reveal System */
+    .reveal { opacity:0; transform:translateY(50px); transition:all .8s var(--ease); }
+    .reveal.on { opacity:1; transform:translateY(0); }
+    .d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s}
+
+    /* ─── Experience Timeline ─── */
+    .timeline { position:relative; padding-left:2rem; }
+    .timeline::before { content:''; position:absolute; left:0; top:6px; bottom:0; width:1px; background:linear-gradient(to bottom,var(--electric),transparent); }
+    .tl-item { position:relative; padding-left:2.5rem; padding-bottom:3.5rem; }
+    .tl-dot { position:absolute; left:-2rem; top:6px; width:13px; height:13px; border-radius:50%; background:var(--deep); border:2px solid var(--electric); transform:translateX(-50%); z-index:1; transition: .3s; }
+    .tl-item:hover .tl-dot { background:var(--electric); box-shadow:0 0 15px var(--electric); }
+    .tl-card { background:var(--royal); border:1px solid var(--border); padding:2rem; transition: .3s; }
+    .tl-card:hover { border-color:rgba(100,255,218,.3); transform:translateX(5px); }
+    .tl-role { font-size:1.1rem; font-weight:800; color:var(--white); margin-bottom:0.3rem; }
+    .tl-company { font-size:.68rem; font-weight:700; color:var(--electric); text-transform:uppercase; border:1px solid rgba(100,255,218,.2); padding:.2rem .6rem; display:inline-block; margin-bottom:1rem; }
+    .tl-body { font-size:.85rem; line-height:1.8; color:var(--text); }
+    .tl-body p { position:relative; padding-left:1.2rem; margin-bottom:0.5rem; }
+    .tl-body p::before { content:'▹'; position:absolute; left:0; color:var(--electric); }
+
+    /* ─── Projects ─── */
+    .proj-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+    .proj-card { background:var(--royal); border:1px solid var(--border); text-decoration:none; overflow:hidden; transition: .4s var(--ease-bounce); }
+    .proj-card:hover { transform:translateY(-8px); border-color:var(--electric); }
+    .proj-img { height:180px; background:var(--mid); overflow:hidden; }
+    .proj-img img { width:100%; height:100%; object-fit:cover; transition: .6s; }
+    .proj-card:hover .proj-img img { transform:scale(1.08); }
+    .proj-body { padding:1.5rem; }
+    .proj-name { color:var(--white); font-weight:700; margin-bottom:0.5rem; }
+    .proj-desc { font-size:.78rem; color:var(--muted); line-height:1.6; margin-bottom:1rem; }
+    .proj-pills { display:flex; flex-wrap:wrap; gap:0.4rem; }
+    .proj-pill { font-size:.55rem; padding:.2rem .5rem; border:1px solid var(--border); color:var(--electric); }
+
+    /* ─── Skills ─── */
+    .skill-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.2rem; }
+    .skill-card { background:var(--royal); border:1px solid var(--border); padding:1.8rem; transition:.3s; }
+    .skill-card:hover { border-color:var(--electric); transform:translateY(-5px); }
+    .skill-title { font-size:.65rem; font-weight:700; color:var(--electric); text-transform:uppercase; margin-bottom:1rem; letter-spacing:.1em; }
+    .skill-tags { display:flex; flex-wrap:wrap; gap:.4rem; }
+    .skill-tag { font-size:.65rem; padding:.3rem .7rem; border:1px solid var(--border); color:var(--text); transition:.3s; }
+    .skill-tag:hover { border-color:var(--electric); color:var(--electric); }
+
+    /* ─── Education ─── */
+    #edu-wrap { padding:8rem 4rem; background:var(--navy); }
+    .edu-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border); }
+    .edu-cell { background:var(--royal); padding:1.8rem; }
+    .edu-deg { font-size:.9rem; font-weight:700; color:var(--white); margin-bottom:.3rem; }
+    .edu-inst { font-size:.72rem; color:var(--muted); }
+
+    /* ─── Contact ─── */
+    #contact { background:var(--deep); }
+    .contact-title { font-size:clamp(3rem,7vw,6rem); font-weight:900; color:var(--white); line-height:.9; }
+    .contact-title span { color:var(--electric); }
+    .contact-links { margin-top:3rem; display:flex; flex-direction:column; gap:.8rem; max-width:500px; }
+    .contact-link { display:flex; justify-content:space-between; padding:1.2rem; border:1px solid var(--border); background:var(--royal); color:var(--text); text-decoration:none; font-weight:600; transition:.3s; }
+    .contact-link:hover { border-color:var(--electric); color:var(--electric); transform:translateX(10px); }
+
+    footer { border-top:1px solid var(--border); padding:2rem 4rem; display:flex; justify-content:space-between; background:var(--navy); font-size:.6rem; color:var(--muted); text-transform:uppercase; letter-spacing:.2em; }
+
+    @media(max-width:900px){
+      #hero { grid-template-columns:1fr; padding:6rem 1.5rem; text-align:center; gap:2rem; }
+      .hero-photo-col { order:-1; }
+      .nav-links { display:none; }
+      .proj-grid { grid-template-columns:1fr; }
+      .edu-grid { grid-template-columns:1fr 1fr; }
+      section, #edu-wrap { padding:5rem 1.5rem; }
+      .scroll-cue { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="preloader"><div class="pre-wrap"><div class="pre-dot"></div><div class="pre-dot"></div><div class="pre-dot"></div></div></div>
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <nav id="nav">
+    <a class="nav-logo" href="#">TB</a>
+    <ul class="nav-links">
+      <li><a href="#about">Sobre mí</a></li>
+      <li><a href="#experience">Experiencia</a></li>
+      <li><a href="#projects">Proyectos</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contacto</a></li>
+    </ul>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-left">
+      <div class="hero-tag">Marketing Digital · E-commerce · Growth</div>
+      <h1 class="hero-name">Tobías<br/><span style="color:var(--muted)">Bermúdez</span></h1>
+      <p class="hero-role">Analista de Marketing Digital & E-commerce</p>
+      <p class="hero-desc">Especialista en ecosistemas de venta online, automatización de marketing y optimización de conversión. Experiencia en Warner Bros, Whirlpool y Dellorean.</p>
+      <div class="hero-ctas">
+        <a href="#experience" class="btn"><span>Ver experiencia</span> <span>→</span></a>
+        <a href="#contact" class="btn" style="border-color:var(--border); color:var(--muted)"><span>Contacto</span></a>
+      </div>
+    </div>
+
+    <div class="hero-photo-col" id="heroPhoto">
+      <div class="hero-img-wrap">
+        <div class="photo-frame">
+          <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
+          <div class="corner corner-bl"></div><div class="corner corner-br"></div>
+          <img src="foto.jpg" alt="Tobías Bermúdez" onerror="this.style.background='#112240';this.removeAttribute('src')">
+          <div class="photo-badge">
+            <div class="badge-num">3+</div>
+            <div class="badge-label">Años de Exp.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-cue" id="scrollCue"><span>Scroll</span><div class="scroll-bar"></div></div>
+  </section>
+
+  <hr class="divider" />
+
+  <section id="about">
+    <div class="section-inner reveal">
+      <p class="section-label">Perfil</p>
+      <h2 class="section-title">Sobre mí</h2>
+      <p style="font-size:1.1rem; line-height:1.9; color:var(--text); max-width:850px; font-weight:300;">
+        Profesional <span class="kw">analítico-técnico</span> especializado en <span class="kw">e-commerce y marketing digital</span>. Me apasiona construir ecosistemas de venta eficientes, diseñar automatizaciones que generan resultados reales, y optimizar el funnel de conversión.<br/><br/>
+        He trabajado con marcas globales como <span class="kw">Warner Bros</span> y <span class="kw">Whirlpool</span>, combinando visión estratégica con ejecución técnica en plataformas como Klaviyo, Tienda Nube y VTEX.
+      </p>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="section-inner">
+      <p class="section-label">Trayectoria</p>
+      <h2 class="section-title">Experiencia</h2>
+      <div class="timeline">
+        
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-role">Analista de Marketing Digital</div>
+            <div class="tl-company">Dellorean | Feb 2025 — Presente</div>
+            <div class="tl-body">
+              <p>Estrategias en Google Ads, Meta Ads y MercadoLibre Ads con foco en <span class="kw">ROAS</span>.</p>
+              <p>Migración y rediseño completo del sitio dellorean.com.ar en <span class="kw">Tienda Nube</span>.</p>
+              <p>Gestión de cuentas oficiales en Mercado Libre y optimización de <span class="kw">ACOS</span>.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-role">Analista E-commerce & Digital</div>
+            <div class="tl-company">Freelance | 2024 — Presente</div>
+            <div class="tl-body">
+              <p><span class="kw">Klaviyo Specialist</span>: configuración de flujos de automatización para aumentar el LTV.</p>
+              <p>Desarrollo WordPress/WooCommerce con HTML/CSS personalizado.</p>
+              <p>Configuración de catálogos y automatizaciones segmentadas.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-role">Asistente de Medios</div>
+            <div class="tl-company">Mindshare | Feb 2024 — Ago 2024</div>
+            <div class="tl-body">
+              <p>Campañas para <span class="kw">Warner Bros</span>: reportes de desempeño y análisis de datos.</p>
+              <p>Coordinación de pauta en medios online y offline.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-role">Pasante de E-commerce</div>
+            <div class="tl-company">Whirlpool Corporation | Oct 2022 — Oct 2023</div>
+            <div class="tl-body">
+              <p>Email Marketing para Ariston y Eslabón de Lujo con <span class="kw">Datatrics</span>.</p>
+              <p>Optimización de pop-ups e iteración continua de conversión.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="section-inner">
+      <p class="section-label">Portafolio</p>
+      <h2 class="section-title">Proyectos</h2>
+      <div class="proj-grid">
+        <a href="https://universosgamers.com.ar/" class="proj-card reveal" target="_blank">
+          <div class="proj-img"><img src="universo-gamer.png" alt="Universo Gamer"></div>
+          <div class="proj-body">
+            <div class="proj-name">Universo Gamer</div>
+            <p class="proj-desc">E-commerce de componentes gamer sobre WooCommerce.</p>
+            <div class="proj-pills"><span class="proj-pill">WooCommerce</span><span class="proj-pill">SEO</span></div>
+          </div>
+        </a>
+        <a href="https://www.dellorean.com.ar/" class="proj-card reveal d1" target="_blank">
+          <div class="proj-img"><img src="dellorean.png" alt="Dellorean"></div>
+          <div class="proj-body">
+            <div class="proj-name">Dellorean</div>
+            <p class="proj-desc">Rediseño y migración completa a Tienda Nube.</p>
+            <div class="proj-pills"><span class="proj-pill">Tienda Nube</span><span class="proj-pill">GEO</span></div>
+          </div>
+        </a>
+        <a href="https://laboratorio3d.com.ar/" class="proj-card reveal d2" target="_blank">
+          <div class="proj-img"><img src="laboratorio3d.png" alt="Laboratorio 3D"></div>
+          <div class="proj-body">
+            <div class="proj-name">Laboratorio 3D</div>
+            <p class="proj-desc">Automatización de flujos Klaviyo y SEO local.</p>
+            <div class="proj-pills"><span class="proj-pill">Klaviyo</span><span class="proj-pill">Email</span></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="section-inner">
+      <p class="section-label">Conocimientos</p>
+      <h2 class="section-title">Stack Técnico</h2>
+      <div class="skill-grid">
+        <div class="skill-card reveal">
+          <div class="skill-title">Marketplaces & E-com</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Mercado Libre Full</span><span class="skill-tag">Tienda Nube</span>
+            <span class="skill-tag">VTEX</span><span class="skill-tag">WooCommerce</span>
+          </div>
+        </div>
+        <div class="skill-card reveal d1">
+          <div class="skill-title">Marketing & Ads</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Klaviyo</span><span class="skill-tag">Google Ads</span>
+            <span class="skill-tag">Meta Ads</span><span class="skill-tag">GA4</span>
+          </div>
+        </div>
+        <div class="skill-card reveal d2">
+          <div class="skill-title">Desarrollo & Diseño</div>
+          <div class="skill-tags">
+            <span class="skill-tag">HTML/CSS</span><span class="skill-tag">Python</span>
+            <span class="skill-tag">UX/UI</span><span class="skill-tag">Photoshop</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="edu-wrap">
+    <div class="section-inner">
+      <p class="section-label">Formación</p>
+      <h2 class="section-title">Educación</h2>
+      <div class="edu-grid">
+        <div class="edu-cell"><p style="color:var(--electric); font-size:.6rem; margin-bottom:.5rem;">2026</p><div class="edu-deg">Lic. en Comercialización</div><div class="edu-inst">UADE</div></div>
+        <div class="edu-cell"><p style="color:var(--electric); font-size:.6rem; margin-bottom:.5rem;">Completado</p><div class="edu-deg">Dev Web</div><div class="edu-inst">UADE</div></div>
+        <div class="edu-cell"><p style="color:var(--electric); font-size:.6rem; margin-bottom:.5rem;">Completado</p><div class="edu-deg">Python Básico</div><div class="edu-inst">Cisco</div></div>
+        <div class="edu-cell"><p style="color:var(--electric); font-size:.6rem; margin-bottom:.5rem;">Idioma</p><div class="edu-deg">Inglés Intermedio</div><div class="edu-inst">Global</div></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="contact">
+    <div class="section-inner reveal">
+      <h2 class="contact-title">Trabajemos<br/><span>juntos.</span></h2>
+      <div class="contact-links">
+        <a href="mailto:toba.grasso@gmail.com" class="contact-link"><span>Email</span><span>toba.grasso@gmail.com →</span></a>
+        <a href="https://www.linkedin.com/in/tobías-bermúdez-814718224" class="contact-link" target="_blank"><span>LinkedIn</span><span>Perfil Oficial →</span></a>
+        <a href="tel:+541132081199" class="contact-link"><span>Teléfono</span><span>+54 11 3208-1199 →</span></a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Tobías Bermúdez</p>
+    <p>Buenos Aires, Argentina</p>
+  </footer>
+
+  <script>
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('preloader').classList.add('hidden');
+        document.getElementById('nav').classList.add('ready');
+        
+        const heroItems = [
+          { el: document.querySelector('.hero-tag'), delay: 200 },
+          { el: document.querySelector('.hero-name'), delay: 350 },
+          { el: document.querySelector('.hero-role'), delay: 500 },
+          { el: document.querySelector('.hero-desc'), delay: 650 },
+          { el: document.querySelector('.hero-ctas'), delay: 800 },
+          { el: document.getElementById('heroPhoto'), delay: 400 },
+          { el: document.getElementById('scrollCue'), delay: 900 }
+        ];
+
+        heroItems.forEach(item => {
+          setTimeout(() => {
+            if(item.el) {
+              item.el.style.opacity = '1';
+              item.el.style.transform = 'none';
+              item.el.style.transition = 'all .8s cubic-bezier(.5,0,0,1)';
+            }
+          }, item.delay);
+        });
+      }, 600);
+    });
+
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx=0, my=0, rx=0, ry=0;
+    document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+    (function tick(){
+      cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+      rx+=(mx-rx)*.15; ry+=(my-ry)*.15;
+      ring.style.left=rx+'px'; ring.style.top=ry+'px';
+      requestAnimationFrame(tick);
+    })();
+
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('on'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+    });
+  </script>
+</body>
+</html>
