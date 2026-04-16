@@ -57,6 +57,12 @@
     body:has(a:hover) #cursor,
     body:has(button:hover) #cursor { width:14px; height:14px; }
 
+    /* ─── Global BG Canvas ─── */
+    #bg-canvas {
+      position:fixed; inset:0; width:100%; height:100%;
+      pointer-events:none; z-index:0;
+    }
+
     /* ─── Preloader ─── */
     #preloader {
       position:fixed; inset:0; z-index:1000;
@@ -72,26 +78,61 @@
     .pre-wrap { display:flex; gap:10px; }
     @keyframes pre-bounce { 0%,100%{transform:scaleY(1)} 50%{transform:scaleY(1.8)} }
 
-    /* ─── Nav ─── */
-    nav {
-      position:fixed; top:0; left:0; right:0; z-index:100;
-      display:flex; align-items:center; justify-content:space-between;
-      padding:1.4rem 4rem; transform:translateY(-100%); opacity:0;
-      transition:all var(--dur-fast) var(--ease);
+    /* ─── Nav Isla ─── */
+    #nav-wrap {
+      position:fixed; top:1.2rem; left:0; right:0; z-index:100;
+      display:flex; justify-content:center; align-items:center;
+      pointer-events:none;
+      transform:translateY(-120%); opacity:0;
+      transition:all .5s var(--ease);
     }
-    nav.ready { transform:translateY(0); opacity:1; }
-    nav.scrolled { background:rgba(2,6,23,.95); border-bottom:1px solid var(--border); padding:1rem 4rem; backdrop-filter:blur(16px); }
-    .nav-logo { font-size:.78rem; font-weight:800; letter-spacing:.3em; text-transform:uppercase; color:var(--electric); text-decoration:none; }
-    .nav-links { display:flex; gap:2.5rem; list-style:none; }
-    .nav-links a { font-size:.68rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); text-decoration:none; position:relative; transition:color .3s; }
-    .nav-links a:hover { color:var(--electric); }
+    #nav-wrap.ready { transform:translateY(0); opacity:1; }
+    .nav-isla {
+      pointer-events:all;
+      display:inline-flex; align-items:center; gap:0;
+      background:rgba(8,20,40,.92);
+      border:1px solid rgba(100,255,218,.25);
+      border-radius:999px;
+      padding:0 .5rem;
+      height:56px;
+      backdrop-filter:blur(20px);
+      box-shadow:0 0 0 1px rgba(100,255,218,.06), 0 8px 32px rgba(0,0,0,.5);
+      transition:box-shadow .3s, border-color .3s;
+    }
+    .nav-isla:hover { border-color:rgba(100,255,218,.4); box-shadow:0 0 0 1px rgba(100,255,218,.1), 0 8px 40px rgba(0,0,0,.6), 0 0 24px rgba(100,255,218,.06); }
+    .nav-logo-pill {
+      display:flex; align-items:center; gap:8px;
+      padding:0 1rem 0 .6rem;
+      border-right:1px solid rgba(100,255,218,.12);
+      text-decoration:none; height:100%; margin-right:.3rem;
+    }
+    .nav-logo-pill svg { width:34px; height:34px; flex-shrink:0; }
+    .nav-logo-pill-name { font-size:.65rem; font-weight:800; color:var(--white); letter-spacing:.01em; white-space:nowrap; }
+    .nav-links-isla { display:flex; align-items:center; gap:0; list-style:none; height:100%; }
+    .nav-links-isla a {
+      display:flex; align-items:center; height:100%; padding:0 .95rem;
+      font-size:.57rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase;
+      color:rgba(200,215,255,.7); text-decoration:none;
+      transition:color .2s, text-shadow .2s; white-space:nowrap; border-radius:999px;
+    }
+    .nav-links-isla a:hover { color:#fff; background:transparent; text-shadow:0 0 12px rgba(100,255,218,.9), 0 0 24px rgba(100,255,218,.5); }
+    .nav-links-isla a.active { color:var(--electric); text-shadow:0 0 10px rgba(100,255,218,.7); }
+    .nav-cta-pill {
+      display:flex; align-items:center; justify-content:center;
+      margin-left:.4rem;
+      background:var(--electric); color:var(--deep);
+      font-size:.55rem; font-weight:800; letter-spacing:.18em; text-transform:uppercase;
+      padding:0 1.1rem; height:40px; border-radius:999px;
+      text-decoration:none; transition:background .2s; white-space:nowrap; flex-shrink:0;
+    }
+    .nav-cta-pill:hover { background:#4ce8c4; }
 
     /* ─── Hero ─── */
     #hero {
       min-height:100vh;
       display:grid; grid-template-columns:1fr 1fr;
       align-items:center;
-      padding:8rem 4rem 4rem;
+      padding:9rem 4rem 4rem;
       position:relative; overflow:hidden;
       gap:4rem;
     }
@@ -138,7 +179,7 @@
     @keyframes scroll-slide { 0%{left:-100%} 100%{left:100%} }
 
     /* ─── Secciones Comunes ─── */
-    section { padding:8rem 4rem; }
+    section { padding:8rem 4rem; position:relative; z-index:1; }
     .section-inner { max-width:1200px; margin:0 auto; }
     .section-label { font-size:.6rem; font-weight:700; letter-spacing:.35em; text-transform:uppercase; color:var(--electric); margin-bottom:.7rem; }
     .section-title { font-size:clamp(2rem,4vw,3.2rem); font-weight:800; color:var(--white); margin-bottom:3.5rem; line-height:.95; }
@@ -187,7 +228,7 @@
     .skill-tag:hover { border-color:var(--electric); color:var(--electric); }
 
     /* ─── Education ─── */
-    #edu-wrap { padding:8rem 4rem; background:var(--navy); }
+    #edu-wrap { padding:8rem 4rem; background:var(--navy); position:relative; z-index:1; }
     .edu-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border); }
     .edu-cell { background:var(--royal); padding:1.8rem; }
     .edu-deg { font-size:.9rem; font-weight:700; color:var(--white); margin-bottom:.3rem; }
@@ -201,12 +242,54 @@
     .contact-link { display:flex; justify-content:space-between; padding:1.2rem; border:1px solid var(--border); background:var(--royal); color:var(--text); text-decoration:none; font-weight:600; transition:.3s; }
     .contact-link:hover { border-color:var(--electric); color:var(--electric); transform:translateX(10px); }
 
-    footer { border-top:1px solid var(--border); padding:2rem 4rem; display:flex; justify-content:space-between; background:var(--navy); font-size:.6rem; color:var(--muted); text-transform:uppercase; letter-spacing:.2em; }
+    footer { border-top:1px solid var(--border); padding:2rem 4rem; display:flex; justify-content:space-between; background:var(--navy); position:relative; z-index:1; font-size:.6rem; color:var(--muted); text-transform:uppercase; letter-spacing:.2em; }
+
+
+    /* ─── Pill Filters ─── */
+    .pill-filters { display:flex; gap:.45rem; flex-wrap:wrap; margin-bottom:2rem; }
+    .pill-btn { font-family:var(--font); font-size:.6rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; padding:.45rem 1.1rem; border-radius:999px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:pointer; transition:all .22s; display:flex; align-items:center; gap:.45rem; }
+    .pill-btn:hover { border-color:var(--muted); color:var(--text); }
+    .pill-btn.active { color:var(--deep); border-color:transparent; }
+    .pill-btn[data-filter="all"].active { background:var(--electric); }
+    .pill-btn[data-filter="marketplaces"].active { background:#64FFDA; }
+    .pill-btn[data-filter="ads"].active { background:#d77eff; }
+    .pill-btn[data-filter="automatizacion"].active { background:#ffb450; }
+    .pill-btn[data-filter="dev"].active { background:#64b4ff; }
+    .pill-btn[data-filter="analitica"].active { background:#50dc8c; }
+    .pill-btn[data-filter="diseno"].active { background:#ff7878; }
+    .pill-btn .pdot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+
+    /* ─── Tag Cloud ─── */
+    .cloud-area { display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; min-height:200px; align-content:center; }
+    .tag { display:inline-flex; align-items:center; gap:.4rem; border:1px solid; padding:.4rem 1rem; cursor:default; transition:all .3s; white-space:nowrap; font-family:var(--font); font-weight:700; text-transform:uppercase; letter-spacing:.08em; }
+    .tag.hidden { opacity:0; transform:scale(.85); pointer-events:none; width:0; padding:0; border:none; overflow:hidden; gap:0; margin:0; }
+    .tag-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+    .tag[data-cat="marketplaces"] { font-size:.62rem; border-color:rgba(100,255,218,.35); color:#64FFDA; }
+    .tag[data-cat="marketplaces"]:hover { background:rgba(100,255,218,.1); }
+    .tag[data-cat="marketplaces"] .tag-dot { background:#64FFDA; }
+    .tag[data-cat="ads"] { font-size:.68rem; border-color:rgba(215,126,255,.35); color:#d77eff; }
+    .tag[data-cat="ads"]:hover { background:rgba(215,126,255,.1); }
+    .tag[data-cat="ads"] .tag-dot { background:#d77eff; }
+    .tag[data-cat="automatizacion"] { font-size:.65rem; border-color:rgba(255,180,80,.35); color:#ffb450; }
+    .tag[data-cat="automatizacion"]:hover { background:rgba(255,180,80,.1); }
+    .tag[data-cat="automatizacion"] .tag-dot { background:#ffb450; }
+    .tag[data-cat="dev"] { font-size:.63rem; border-color:rgba(100,180,255,.35); color:#64b4ff; }
+    .tag[data-cat="dev"]:hover { background:rgba(100,180,255,.1); }
+    .tag[data-cat="dev"] .tag-dot { background:#64b4ff; }
+    .tag[data-cat="analitica"] { font-size:.66rem; border-color:rgba(80,220,140,.35); color:#50dc8c; }
+    .tag[data-cat="analitica"]:hover { background:rgba(80,220,140,.1); }
+    .tag[data-cat="analitica"] .tag-dot { background:#50dc8c; }
+    .tag[data-cat="diseno"] { font-size:.61rem; border-color:rgba(255,120,120,.35); color:#ff7878; }
+    .tag[data-cat="diseno"]:hover { background:rgba(255,120,120,.1); }
+    .tag[data-cat="diseno"] .tag-dot { background:#ff7878; }
+    .tag-legend { display:flex; flex-wrap:wrap; gap:1rem; margin-top:2rem; padding-top:1.2rem; border-top:1px solid var(--border); }
+    .tag-legend-item { display:flex; align-items:center; gap:.4rem; font-size:.58rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+    .tag-legend-dot { width:7px; height:7px; border-radius:50%; }
 
     @media(max-width:900px){
       #hero { grid-template-columns:1fr; padding:6rem 1.5rem; text-align:center; gap:2rem; }
       .hero-photo-col { order:-1; }
-      .nav-links { display:none; }
+      .nav-links-isla { display:none; }
       .proj-grid { grid-template-columns:1fr; }
       .edu-grid { grid-template-columns:1fr 1fr; }
       section, #edu-wrap { padding:5rem 1.5rem; }
@@ -216,20 +299,32 @@
 </head>
 <body>
 
+  <canvas id="bg-canvas"></canvas>
+
   <div id="preloader"><div class="pre-wrap"><div class="pre-dot"></div><div class="pre-dot"></div><div class="pre-dot"></div></div></div>
   <div id="cursor"></div>
   <div id="cursor-ring"></div>
 
-  <nav id="nav">
-    <a class="nav-logo" href="#">TB</a>
-    <ul class="nav-links">
-      <li><a href="#about">Sobre mí</a></li>
-      <li><a href="#experience">Experiencia</a></li>
-      <li><a href="#projects">Proyectos</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#contact">Contacto</a></li>
-    </ul>
-  </nav>
+  <div id="nav-wrap">
+    <nav class="nav-isla">
+      <a class="nav-logo-pill" href="#">
+        <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="27" font-family="Montserrat,sans-serif" font-weight="900" font-size="26" fill="#64FFDA">T</text>
+          <text x="15" y="27" font-family="Montserrat,sans-serif" font-weight="900" font-size="26" fill="#e8f0fe" opacity="0.75">B</text>
+          <line x1="17" y1="3" x2="17" y2="31" stroke="#64FFDA" stroke-width="1" opacity="0.3"/>
+        </svg>
+        <span class="nav-logo-pill-name">Tobías Bermúdez</span>
+      </a>
+      <ul class="nav-links-isla" id="navLinksIsla">
+        <li><a href="#about">Sobre mí</a></li>
+        <li><a href="#experience">Experiencia</a></li>
+        <li><a href="#projects">Proyectos</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#edu-wrap">Educación</a></li>
+      </ul>
+      <a class="nav-cta-pill" href="#contact">Contacto →</a>
+    </nav>
+  </div>
 
   <section id="hero">
     <div class="hero-left">
@@ -260,7 +355,6 @@
     <div class="scroll-cue" id="scrollCue"><span>Scroll</span><div class="scroll-bar"></div></div>
   </section>
 
-  <hr class="divider" />
 
   <section id="about">
     <div class="section-inner reveal">
@@ -273,21 +367,24 @@
     </div>
   </section>
 
+
   <section id="experience">
     <div class="section-inner">
       <p class="section-label">Trayectoria</p>
       <h2 class="section-title">Experiencia</h2>
       <div class="timeline">
-        
+
         <div class="tl-item reveal">
           <div class="tl-dot"></div>
           <div class="tl-card">
             <div class="tl-role">Analista de Marketing Digital</div>
             <div class="tl-company">Dellorean | Feb 2025 — Presente</div>
             <div class="tl-body">
-              <p>Estrategias en Google Ads, Meta Ads y MercadoLibre Ads con foco en <span class="kw">ROAS</span>.</p>
-              <p>Migración y rediseño completo del sitio dellorean.com.ar en <span class="kw">Tienda Nube</span>.</p>
-              <p>Gestión de cuentas oficiales en Mercado Libre y optimización de <span class="kw">ACOS</span>.</p>
+              <p>Diseño e implementación de estrategias digitales en <span class="kw">Google Ads</span>, <span class="kw">Meta Ads</span> y <span class="kw">MercadoLibre Ads</span> orientadas a maximizar ventas y posicionamiento de marca.</p>
+              <p>Gestión integral de dos cuentas oficiales en <span class="kw">Mercado Libre</span>: catalogación masiva, optimización de títulos e imágenes para mejorar el posicionamiento orgánico dentro del marketplace.</p>
+              <p>Liderazgo de la estrategia de <span class="kw">Mercado Ads</span>: optimización de ACOS y ROI en campañas de producto, con seguimiento de métricas y ajustes continuos.</p>
+              <p>Optimización <span class="kw">SEO/GEO</span> en Tienda Nube orientada a incrementar el tráfico cualificado y mejorar la tasa de conversión del sitio.</p>
+              <p>Desarrollo de estrategia de <span class="kw">Influencer Marketing</span>: búsqueda, contacto y coordinación de creadores de contenido para campañas omnicanal.</p>
             </div>
           </div>
         </div>
@@ -298,9 +395,10 @@
             <div class="tl-role">Analista E-commerce & Digital</div>
             <div class="tl-company">Freelance | 2024 — Presente</div>
             <div class="tl-body">
-              <p><span class="kw">Klaviyo Specialist</span>: configuración de flujos de automatización para aumentar el LTV.</p>
-              <p>Desarrollo WordPress/WooCommerce con HTML/CSS personalizado.</p>
-              <p>Configuración de catálogos y automatizaciones segmentadas.</p>
+              <p><span class="kw">Klaviyo Specialist</span>: configuración de flujos de automatización completos (Abandoned Cart, Win-back, Welcome Series) para aumentar el LTV y retención de clientes.</p>
+              <p>Desarrollo de sitios en <span class="kw">WordPress/WooCommerce</span> con diseño y maquetación personalizada en HTML/CSS, asegurando rendimiento, UX y coherencia visual.</p>
+              <p>Configuración de <span class="kw">catálogos y CRM</span>: organización de bases de datos, segmentación de audiencias y automatizaciones orientadas a mejorar la gestión comercial.</p>
+              <p>Trabajo con múltiples clientes simultáneos en sectores de tecnología, retail y 3D printing, adaptando estrategias al contexto y objetivos de cada negocio.</p>
             </div>
           </div>
         </div>
@@ -311,8 +409,23 @@
             <div class="tl-role">Asistente de Medios</div>
             <div class="tl-company">Mindshare | Feb 2024 — Ago 2024</div>
             <div class="tl-body">
-              <p>Campañas para <span class="kw">Warner Bros</span>: reportes de desempeño y análisis de datos.</p>
-              <p>Coordinación de pauta en medios online y offline.</p>
+              <p>Coordinación y seguimiento de campañas publicitarias en medios <span class="kw">online y offline</span> para la cuenta de <span class="kw">Warner Bros</span>, gestionando plazos, materiales y versiones creativas.</p>
+              <p>Generación de <span class="kw">reportes de desempeño</span> y análisis de datos con foco en métricas clave de audiencia, impresiones y alcance por canal.</p>
+              <p>Revisión y validación de <span class="kw">copys y piezas creativas</span> previo a su envío a medios, garantizando alineación con los lineamientos de marca y pauta aprobada.</p>
+              <p>Trabajo dentro de una agencia de medios global, con exposición a procesos de <span class="kw">planificación estratégica</span> y gestión de grandes cuentas internacionales.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-role">Product Analyst</div>
+            <div class="tl-company">Metafar | Oct 2023 — Dic 2023</div>
+            <div class="tl-body">
+              <p>Gestión y actualización del sitio web: seguimiento de desarrollos en curso, carga y organización de contenido para mantener la plataforma operativa y actualizada.</p>
+              <p>Implementación de estrategias de <span class="kw">SEO on-page</span> y marketing predictivo para mejorar la visibilidad orgánica y el posicionamiento en buscadores.</p>
+              <p>Análisis y optimización de <span class="kw">conversión (CRO)</span>: identificación de fricciones en el funnel y propuestas de mejora basadas en datos de comportamiento de usuarios.</p>
             </div>
           </div>
         </div>
@@ -323,8 +436,10 @@
             <div class="tl-role">Pasante de E-commerce</div>
             <div class="tl-company">Whirlpool Corporation | Oct 2022 — Oct 2023</div>
             <div class="tl-body">
-              <p>Email Marketing para Ariston y Eslabón de Lujo con <span class="kw">Datatrics</span>.</p>
-              <p>Optimización de pop-ups e iteración continua de conversión.</p>
+              <p><span class="kw">Email Marketing</span> para las marcas Ariston y Eslabón de Lujo utilizando <span class="kw">Datatrics</span> para personalización dinámica de contenidos según comportamiento del usuario.</p>
+              <p>Creación, revisión y optimización de <span class="kw">pop-ups</span> de captación con análisis de resultados e iteración continua para maximizar su impacto en conversión.</p>
+              <p>Actualización y mantenimiento del sitio web: mejoras de <span class="kw">UX</span>, corrección de errores y garantía de funcionamiento correcto en distintos dispositivos y navegadores.</p>
+              <p>Elaboración de <span class="kw">reportes de resultados</span> de campañas de email y pop-ups, presentando métricas de apertura, clics y conversión para la toma de decisiones.</p>
             </div>
           </div>
         </div>
@@ -332,6 +447,7 @@
       </div>
     </div>
   </section>
+
 
   <section id="projects">
     <div class="section-inner">
@@ -366,35 +482,59 @@
     </div>
   </section>
 
+
   <section id="skills">
     <div class="section-inner">
       <p class="section-label">Conocimientos</p>
       <h2 class="section-title">Stack Técnico</h2>
-      <div class="skill-grid">
-        <div class="skill-card reveal">
-          <div class="skill-title">Marketplaces & E-com</div>
-          <div class="skill-tags">
-            <span class="skill-tag">Mercado Libre Full</span><span class="skill-tag">Tienda Nube</span>
-            <span class="skill-tag">VTEX</span><span class="skill-tag">WooCommerce</span>
-          </div>
-        </div>
-        <div class="skill-card reveal d1">
-          <div class="skill-title">Marketing & Ads</div>
-          <div class="skill-tags">
-            <span class="skill-tag">Klaviyo</span><span class="skill-tag">Google Ads</span>
-            <span class="skill-tag">Meta Ads</span><span class="skill-tag">GA4</span>
-          </div>
-        </div>
-        <div class="skill-card reveal d2">
-          <div class="skill-title">Desarrollo & Diseño</div>
-          <div class="skill-tags">
-            <span class="skill-tag">HTML/CSS</span><span class="skill-tag">Python</span>
-            <span class="skill-tag">UX/UI</span><span class="skill-tag">Photoshop</span>
-          </div>
-        </div>
+
+      <div class="pill-filters">
+        <button class="pill-btn active" data-filter="all"><span class="pdot" style="background:#4a6580"></span>Todos</button>
+        <button class="pill-btn" data-filter="marketplaces"><span class="pdot" style="background:#64FFDA"></span>Marketplaces</button>
+        <button class="pill-btn" data-filter="ads"><span class="pdot" style="background:#d77eff"></span>Ads</button>
+        <button class="pill-btn" data-filter="automatizacion"><span class="pdot" style="background:#ffb450"></span>Automatización</button>
+        <button class="pill-btn" data-filter="dev"><span class="pdot" style="background:#64b4ff"></span>Dev</button>
+        <button class="pill-btn" data-filter="analitica"><span class="pdot" style="background:#50dc8c"></span>Analítica</button>
+        <button class="pill-btn" data-filter="diseno"><span class="pdot" style="background:#ff7878"></span>Diseño</button>
+      </div>
+
+      <div class="cloud-area" id="skillCloud">
+        <span class="tag" data-cat="marketplaces"><span class="tag-dot"></span>Mercado Libre</span>
+        <span class="tag" data-cat="ads"><span class="tag-dot"></span>Google Ads</span>
+        <span class="tag" data-cat="automatizacion"><span class="tag-dot"></span>Klaviyo</span>
+        <span class="tag" data-cat="dev"><span class="tag-dot"></span>HTML / CSS</span>
+        <span class="tag" data-cat="analitica"><span class="tag-dot"></span>GA4</span>
+        <span class="tag" data-cat="marketplaces"><span class="tag-dot"></span>Tienda Nube</span>
+        <span class="tag" data-cat="ads"><span class="tag-dot"></span>Meta Ads</span>
+        <span class="tag" data-cat="dev"><span class="tag-dot"></span>WordPress</span>
+        <span class="tag" data-cat="automatizacion"><span class="tag-dot"></span>Datatrics</span>
+        <span class="tag" data-cat="analitica"><span class="tag-dot"></span>SEO / GEO</span>
+        <span class="tag" data-cat="marketplaces"><span class="tag-dot"></span>WooCommerce</span>
+        <span class="tag" data-cat="ads"><span class="tag-dot"></span>Mercado Ads</span>
+        <span class="tag" data-cat="dev"><span class="tag-dot"></span>Python</span>
+        <span class="tag" data-cat="automatizacion"><span class="tag-dot"></span>CRM</span>
+        <span class="tag" data-cat="analitica"><span class="tag-dot"></span>CRO</span>
+        <span class="tag" data-cat="marketplaces"><span class="tag-dot"></span>VTEX</span>
+        <span class="tag" data-cat="diseno"><span class="tag-dot"></span>Photoshop</span>
+        <span class="tag" data-cat="diseno"><span class="tag-dot"></span>Canva</span>
+        <span class="tag" data-cat="dev"><span class="tag-dot"></span>UX / UI</span>
+        <span class="tag" data-cat="marketplaces"><span class="tag-dot"></span>Mercado Shops</span>
+        <span class="tag" data-cat="automatizacion"><span class="tag-dot"></span>Email Marketing</span>
+        <span class="tag" data-cat="analitica"><span class="tag-dot"></span>Reporting</span>
+        <span class="tag" data-cat="ads"><span class="tag-dot"></span>Influencer Mktg</span>
+      </div>
+
+      <div class="tag-legend">
+        <span class="tag-legend-item"><span class="tag-legend-dot" style="background:#64FFDA"></span>Marketplaces</span>
+        <span class="tag-legend-item"><span class="tag-legend-dot" style="background:#d77eff"></span>Ads</span>
+        <span class="tag-legend-item"><span class="tag-legend-dot" style="background:#ffb450"></span>Automatización</span>
+        <span class="tag-legend-item"><span class="tag-legend-dot" style="background:#64b4ff"></span>Dev</span>
+        <span class="tag-legend-item"><span class="tag-legend-dot" style="background:#50dc8c"></span>Analítica</span>
+        <span class="tag-legend-item"><span class="tag-legend-dot" style="background:#ff7878"></span>Diseño</span>
       </div>
     </div>
   </section>
+
 
   <div id="edu-wrap">
     <div class="section-inner">
@@ -416,6 +556,7 @@
         <a href="mailto:toba.grasso@gmail.com" class="contact-link"><span>Email</span><span>toba.grasso@gmail.com →</span></a>
         <a href="https://www.linkedin.com/in/tobías-bermúdez-814718224" class="contact-link" target="_blank"><span>LinkedIn</span><span>Perfil Oficial →</span></a>
         <a href="tel:+541132081199" class="contact-link"><span>Teléfono</span><span>+54 11 3208-1199 →</span></a>
+        <a href="CV_Tobias_Bermudez_Grasso.pdf" class="contact-link" download><span>Descargar CV</span><span>PDF ↓</span></a>
       </div>
     </div>
   </section>
@@ -429,7 +570,7 @@
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.getElementById('preloader').classList.add('hidden');
-        document.getElementById('nav').classList.add('ready');
+        document.getElementById('nav-wrap').classList.add('ready');
         
         const heroItems = [
           { el: document.querySelector('.hero-tag'), delay: 200 },
@@ -470,8 +611,66 @@
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
     window.addEventListener('scroll', () => {
-      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+      
     });
+
+    // ── Glóbulos globales ──
+    (function(){
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let W, H, blobs = [];
+
+      function resize() {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        blobs = Array.from({length: 12}, () => ({
+          x: Math.random() * W, y: Math.random() * H,
+          r: 80 + Math.random() * 160,
+          vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25,
+          phase: Math.random() * Math.PI * 2,
+          color: Math.random() > .5 ? '100,255,218' : '100,180,255'
+        }));
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        const t = Date.now() * .0007;
+        blobs.forEach(b => {
+          b.x += b.vx; b.y += b.vy;
+          if (b.x < -b.r) b.x = W + b.r;
+          if (b.x > W + b.r) b.x = -b.r;
+          if (b.y < -b.r) b.y = H + b.r;
+          if (b.y > H + b.r) b.y = -b.r;
+          const pulse = Math.sin(t + b.phase) * .15 + .9;
+          const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * pulse);
+          g.addColorStop(0,   `rgba(${b.color},.07)`);
+          g.addColorStop(.5,  `rgba(${b.color},.03)`);
+          g.addColorStop(1,   'transparent');
+          ctx.fillStyle = g;
+          ctx.fillRect(0, 0, W, H);
+        });
+        requestAnimationFrame(draw);
+      }
+
+      resize();
+      draw();
+      window.addEventListener('resize', resize);
+    })();
+
+
+    // ── Pill Filters ──
+    document.querySelectorAll('.pill-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        document.querySelectorAll('#skillCloud .tag').forEach(tag => {
+          if (filter === 'all' || tag.dataset.cat === filter) tag.classList.remove('hidden');
+          else tag.classList.add('hidden');
+        });
+      });
+    });
+
   </script>
 </body>
 </html>
