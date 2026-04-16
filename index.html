@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tobías Bermúdez — Marketing Digital & E-commerce</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHRleHQgeD0iMCIgeT0iMjUiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLHNlcmlmIiBmb250LXdlaWdodD0iOTAwIiBmb250LXNpemU9IjI2IiBmaWxsPSIjNjRGRkRBIj5UPC90ZXh0PgogIDx0ZXh0IHg9IjE0IiB5PSIyNSIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtd2VpZ2h0PSI5MDAiIGZvbnQtc2l6ZT0iMjYiIGZpbGw9IiNlOGYwZmUiIG9wYWNpdHk9IjAuODUiPkI8L3RleHQ+CiAgPGxpbmUgeDE9IjE2LjUiIHkxPSIyIiB4Mj0iMTYuNSIgeTI9IjMwIiBzdHJva2U9IiM2NEZGREEiIHN0cm9rZS13aWR0aD0iMSIgb3BhY2l0eT0iMC40Ii8+Cjwvc3ZnPg==">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -751,6 +752,42 @@
       });
     });
 
+
+    // ── Tab title animation ──
+    (function(){
+      const defaultTitle = document.title;
+      const messages = [
+        '👋 ¡Volvé!',
+        'Tobías Bermúdez',
+        '📈 Growth Marketing',
+        'Digital Specialist',
+        '🚀 E-commerce Expert',
+        'Klaviyo · Google Ads',
+        '💼 Disponible para proyectos',
+        'Tobías Bermúdez →'
+      ];
+      let idx = 0, ticker = null;
+
+      function startTicker() {
+        if (ticker) return;
+        ticker = setInterval(() => {
+          document.title = messages[idx % messages.length];
+          idx++;
+        }, 1800);
+      }
+
+      function stopTicker() {
+        clearInterval(ticker);
+        ticker = null;
+        idx = 0;
+        document.title = defaultTitle;
+      }
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) startTicker();
+        else stopTicker();
+      });
+    })();
   </script>
 </body>
 </html>
